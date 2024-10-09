@@ -31,7 +31,7 @@ const useAuth = () => {
   useEffect(() => {
     const unLogin = () => {
       reset()
-      window.location.href = window.location.origin + '/user/login'
+      window.location.href = window.location.origin + '/auth/login'
     }
 
     window.addEventListener('getAuthEvent', unLogin)

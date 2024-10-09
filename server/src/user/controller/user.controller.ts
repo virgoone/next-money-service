@@ -1,5 +1,5 @@
 import { IRequest, IResponse } from '@/utils/request'
-import { ApiResponseObject, ResponseUtil } from '@/utils/response'
+import { ApiResponseObject, ApiResponseString, ResponseUtil } from '@/utils/response'
 
 import {
   Body,
@@ -33,7 +33,7 @@ import { UserService } from '../service/user.service'
 import { UserHashids } from '@/db/dto/user.dto'
 import { UserWithProfile, UserWithSts } from '@/auth/dto/user.get.dto'
 import { BucketService } from '@/bucket/services/bucket.service'
-import { BindPasswordDto } from '../dto/bind-password.dto'
+import { ResetPasswordDto, BindPasswordDto } from '../dto/bind-password.dto'
 @ApiTags('User')
 @ApiBearerAuth('Authorization')
 @Controller('user')
@@ -136,6 +136,29 @@ export class UserController {
       email,
     })
     return ResponseUtil.ok(omit({ ...res, id: UserHashids.encode(res.id) }, UserOmitProps))
+  }
+
+  @ApiOperation({ summary: 'Reset password by code' })
+  @Post('reset/password')
+  @ApiResponseString()
+  async resetPassword(@Body() dto: ResetPasswordDto, @Req() req: IRequest) {
+    const { code, email, password } = dto
+    const user = await this.userService.findOneByEmail(email)
+    if (!user) {
+      return ResponseUtil.error('用户不存在')
+    }
+    const err = await this.authService.validateCode(
+      email,
+      code,
+      VerifyCodeType.ResetPassword,
+    )
+    if (err) {
+      return ResponseUtil.error(err)
+    }
+    const res = await this.userService.updateUser(user.id, {
+      password,
+    })
+    return ResponseUtil.ok(UserHashids.encode(res.id))
   }
 
   @ApiOperation({ summary: 'Bind password' })

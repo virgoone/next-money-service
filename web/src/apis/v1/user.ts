@@ -64,6 +64,24 @@ export async function UserControllerBindEmail(
 }
 
 /**
+* Reset password by code
+*/
+export async function UserControllerResetPassword(
+  params: Definitions.ResetPasswordDto,
+): Promise<{
+    error: string;
+    data: Paths.UserControllerResetPassword.Responses
+}> {
+  // /v1/user/reset/password
+  let _params: { [key: string]: any } = {
+    ...params,
+  };
+  return request.post(`/v1/user/reset/password`,  {
+    ..._params
+  });
+}
+
+/**
 * Bind password
 */
 export async function UserControllerBindPassword(

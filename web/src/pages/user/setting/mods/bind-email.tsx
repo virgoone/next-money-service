@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router'
 import { debounce } from 'lodash'
 import { useMutation } from '@tanstack/react-query'
 import { UserControllerBindEmail } from '@/apis/v1/user'
-import { useSendCodeMutation } from '@/pages/login/service'
+import { useSendCodeMutation } from '@/pages/auth/service'
 import { VerifyCodeType } from '@/constants/type'
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
 import { useModel } from '@/store'
@@ -69,7 +69,11 @@ const BindEmailDialog = (props: {
       if (countdown > 0) {
         return
       }
-      await sendCodeMutation.mutateAsync({ email, type: VerifyCodeType.Bind })
+      const { error } = await sendCodeMutation.mutateAsync({ email, type: VerifyCodeType.Bind })
+      if (error) {
+        message.error(error)
+        return
+      }
       timerCountdown()
     } catch (error) {
       console.log('error--->', error)

@@ -58,7 +58,7 @@ export class AuthService {
     const code = this.isDev
       ? '111111'
       : Math.floor(Math.random() * 900000 + 100000).toString()
-    err = await this.mailerService.sendEmailCode(email, code)
+    err = await this.mailerService.sendEmailCode(email, code, type)
     if (err) return err
 
     await this.disableSameTypeCode(email, type)

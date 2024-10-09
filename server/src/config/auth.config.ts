@@ -19,6 +19,11 @@ export default registerAs(
       secretKey: process.env.CLERK_SECRET_KEY ?? '123456',
     },
 
+    resend: {
+      apiKey: process.env.RESEND_API_KEY,
+      emailFrom: process.env.NEXT_PUBLIC_SITE_EMAIL_FROM,
+    },
+
     refreshToken: {
       secretKey: process.env.AUTH_JWT_REFRESH_TOKEN_SECRET_KEY ?? '123456000',
       expirationTime: seconds(

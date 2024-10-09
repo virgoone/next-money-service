@@ -8,7 +8,7 @@ import zhCN from 'antd/locale/zh_CN'
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import PageLayout from './layout'
-import Login from './pages/login'
+import Login from './pages/auth'
 import { QueryProvider } from './query-provider'
 
 function App() {
@@ -32,8 +32,8 @@ function App() {
   useEffect(() => {
     if (!!localStorage.getItem('@@token')) {
       store.init()
-    } else if (window.location.pathname !== '/user/login') {
-      window.location.href = '/user/login'
+    } else if (!window.location.pathname.startsWith('/auth')) {
+      window.location.href = '/auth/login'
     }
   }, [])
 
@@ -59,7 +59,7 @@ function App() {
         <GlobalContext.Provider value={contextValue}>
           <BrowserRouter basename="/">
             <Routes>
-              <Route path="/user/login" element={<Login />} />
+              <Route path="/auth/*" element={<Login />} />
               <Route path="*" element={<PageLayout />} />
             </Routes>
           </BrowserRouter>

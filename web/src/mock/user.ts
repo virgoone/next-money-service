@@ -29,7 +29,7 @@ setupMock({
     })
 
     // 登录
-    Mock.mock(new RegExp('/api/user/login'), (params: Record<string, any>) => {
+    Mock.mock(new RegExp('/api/auth/login'), (params: Record<string, any>) => {
       const { username, password } = JSON.parse(params.body)
       if (!username) {
         return {

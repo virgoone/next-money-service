@@ -16,6 +16,13 @@ id?: string; name?: string; email?: string; phone?: string; createdAt?: string; 
 
      export type BindEmailDto = {
 email?: string; code?: string; /* verify code */
+password?: string; /* password */
+}
+
+     export type ResetPasswordDto = {
+email?: string; /* email */
+code?: string; /* code */
+password?: string; /* password */
 }
 
      export type BindPasswordDto = {
@@ -50,6 +57,9 @@ id?: string; code?: string; creditAmount?: number; used?: boolean; usedBy?: stri
 
      export type GiftCodeUpdateDto = {
 code?: string; creditAmount?: number; }
+
+     export type ChargeOrderDto = {
+id?: string; userId?: string; amount?: number; credit?: number; phase?: string; channel?: string; currency?: string; paymentAt?: string; result?: {}; createdAt?: string; updatedAt?: string; user?: {}; userInfo?: {}; }
 
      export type HealthSerialization = {
 status?: string; info?: {}; error?: {}; details?: {}; }
@@ -94,6 +104,14 @@ declare namespace Paths {
       export type QueryParameters = any;
 
       export type BodyParameters = Definitions.BindEmailDto;
+
+      export type Responses = any;
+    }
+
+    namespace UserControllerResetPassword {
+      export type QueryParameters = any;
+
+      export type BodyParameters = Definitions.ResetPasswordDto;
 
       export type Responses = any;
     }
@@ -187,6 +205,22 @@ declare namespace Paths {
     }
 
     namespace GiftCodeControllerDelete {
+      export type QueryParameters = any;
+
+      export type BodyParameters = any;
+
+      export type Responses = any;
+    }
+
+    namespace ChargeOrderControllerFindAll {
+      export type QueryParameters = any;
+
+      export type BodyParameters = any;
+
+      export type Responses = any;
+    }
+
+    namespace ChargeOrderControllerFindById {
       export type QueryParameters = any;
 
       export type BodyParameters = any;

@@ -1,3 +1,4 @@
+import { UserJSON } from '@clerk/backend'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class GiftCodeDto {
@@ -27,4 +28,53 @@ export class GiftCodeDto {
 
   @ApiProperty()
   expiredAt?: Date
+}
+
+export class ChargeOrderDto {
+  @ApiProperty()
+  id: string
+
+  @ApiProperty()
+  userId: string
+
+  @ApiProperty()
+  amount: number
+
+  @ApiProperty()
+  credit: number
+
+  @ApiProperty()
+  phase: string
+
+  @ApiProperty()
+  channel: string
+
+  @ApiProperty()
+  currency: string
+
+  @ApiPropertyOptional()
+  paymentAt?: Date
+
+  @ApiPropertyOptional()
+  result?: any
+
+  @ApiProperty()
+  createdAt: Date
+
+  @ApiProperty()
+  updatedAt: Date
+
+  @ApiPropertyOptional({
+    type: Object,
+  })
+  user?: UserJSON
+
+  @ApiPropertyOptional({
+    type: Object,
+  })
+  userInfo?: {
+    name?: string
+    email?: string
+    fullName?: string
+  }
 }

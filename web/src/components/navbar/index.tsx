@@ -32,7 +32,8 @@ function Navbar() {
 
   function logout() {
     // dispatch(logout())
-    navigate('/user/login')
+    store.logout()
+    navigate('/auth/login')
   }
 
   const onMenuItemClick: MenuProps['onClick'] = ({ key }) => {
@@ -45,31 +46,9 @@ function Navbar() {
 
   const droplist: MenuProps['items'] = [
     {
-      key: 'user info',
-      label: locale['menu.user.info'],
-      icon: <UserOutlined className={styles['dropdown-icon']} />,
-    },
-    {
       key: 'setting',
       label: locale['menu.user.setting'],
       icon: <SettingOutlined className={styles['dropdown-icon']} />,
-    },
-    {
-      key: 'more',
-      label: locale['message.seeMore'],
-      icon: <ExperimentOutlined className={styles['dropdown-icon']} />,
-      children: [
-        {
-          key: 'workplace',
-          label: locale['menu.dashboard.workplace'],
-          icon: <DashboardOutlined className={styles['dropdown-icon']} />,
-        },
-        {
-          key: 'card list',
-          icon: <InteractionOutlined className={styles['dropdown-icon']} />,
-          label: locale['menu.list.cardList'],
-        },
-      ],
     },
     {
       type: 'divider',
@@ -90,15 +69,14 @@ function Navbar() {
         </div>
       </div>
       <ul className={styles.right}>
-        <li>
+        {/* <li>
           <Input.Search
             className={styles.round}
             placeholder={locale['navbar.search.placeholder']}
           />
-        </li>
-        <li>
+        </li> */}
+        {/* <li>
           <Select
-            bordered={false}
             // suffixIcon={<IconButton icon={<IconLanguage />} />}
             options={[
               { label: '中文', value: 'zh-CN' },
@@ -113,13 +91,13 @@ function Navbar() {
               message.info(`${nextLang['message.lang.tips']}${value}`)
             }}
           />
-        </li>
+        </li> */}
         <li>
           <MessageBox>
             <IconButton icon={<BellOutlined />} />
           </MessageBox>
         </li>
-        <li>
+        {/* <li>
           <Tooltip
             title={
               theme === 'light'
@@ -169,7 +147,7 @@ function Navbar() {
               }}
             />
           </Tooltip>
-        </li>
+        </li> */}
         {userInfo && (
           <li>
             <Dropdown

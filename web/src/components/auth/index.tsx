@@ -8,7 +8,7 @@ function Auth({ children }: { children: JSX.Element }) {
   const [isLogin] = useModel((state) => [state.isLogin])
 
   if (!isLogin) {
-    return <Navigate to="/user/login" state={{ from: location }} replace />
+    return <Navigate to="/auth/login" state={{ from: location }} replace />
   }
 
   return children

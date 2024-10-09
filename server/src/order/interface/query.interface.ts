@@ -9,3 +9,15 @@ export interface GiftCodeQuery {
   to?: string
   operator?: 'or' | 'and'
 }
+
+export interface ChargeOrderQuery {
+  page: number
+  pageSize: number
+  userId?: string
+  channel?: string
+  id?: number
+  sort?: string
+  state?: string
+  from?: string
+  to?: string
+}

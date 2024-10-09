@@ -16,6 +16,7 @@ interface UserModelSlice {
   setToken: (token: string) => void
   setUser: (info: any) => void
   setUserInfo: () => void
+  logout: () => void
   login: (params: {
     username?: string
     password?: string
@@ -139,6 +140,13 @@ const createUserModelSlice: StateCreator<
       state.token = token
       localStorage.setItem('@@token', token)
     }),
+  logout: () => {
+    set((state) => {
+      state.token = null
+      state.info = null
+      localStorage.removeItem('@@token')
+    })
+  },
 })
 
 export type { UserModelSlice }
