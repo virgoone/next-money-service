@@ -1,0 +1,3 @@
+{
+  "extends": "@flux/typescript-config/base.json"
+}
