@@ -45,16 +45,23 @@ function LoginForm() {
     setErrorMessage('')
     setLoading(true)
 
-    const res = await store.login({
-      email: params.email,
-      code: params.code,
-      password: params.password,
-      username: params.username,
-    })
-    if (res.error) {
-      return setErrorMessage(res.error)
+    try {
+      const res = await store.login({
+        email: params.email,
+        code: params.code,
+        password: params.password,
+        username: params.username,
+      })
+      if (res.error) {
+        return setErrorMessage(res.error)
+      }
+      afterLoginSuccess(params)
+    } catch (error) {
+      console.log('error--->', error)
+      setErrorMessage(error.message)
+    } finally {
+      setLoading(false)
     }
-    afterLoginSuccess(params)
   }
 
   const timerCountdown = () => {

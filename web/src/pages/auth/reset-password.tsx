@@ -36,17 +36,24 @@ function ResetPasswordForm() {
     setErrorMessage('')
     setLoading(true)
 
-    const res = await UserControllerResetPassword({
-      email: params.email,
-      code: params.code,
-      password: params.password,
-    })
-    if (res.error) {
-      setErrorMessage(res.error)
-      return
+    try {
+      const res = await UserControllerResetPassword({
+        email: params.email,
+        code: params.code,
+        password: params.password,
+      })
+      if (res.error) {
+        setErrorMessage(res.error)
+        return
+      }
+      message.success(locale['login.form.button.reset-password.success'])
+      afterLoginSuccess(params)
+    } catch (error) {
+      console.log('error--->', error)
+      setErrorMessage(error.message)
+    } finally {
+      setLoading(false)
     }
-    message.success(locale['login.form.button.reset-password.success'])
-    afterLoginSuccess(params)
   }
 
   const timerCountdown = () => {
