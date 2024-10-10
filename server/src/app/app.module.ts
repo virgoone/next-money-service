@@ -30,14 +30,14 @@ import { ClerkModule } from '@/clerk/clerk.module'
         transport:
           process.env.APP_ENV !== 'production'
             ? {
-                target: 'pino-pretty',
-                options: {
-                  colorize: true,
-                  timestamp: true,
-                  translateTime: 'SYS:yyyy-mm-dd HH:MM:ss.l',
-                  ignore: 'context',
-                },
-              }
+              target: 'pino-pretty',
+              options: {
+                colorize: true,
+                timestamp: true,
+                translateTime: 'SYS:yyyy-mm-dd HH:MM:ss.l',
+                ignore: 'context',
+              },
+            }
             : undefined,
 
         genReqId: (req: any) => {
@@ -50,8 +50,7 @@ import { ClerkModule } from '@/clerk/clerk.module'
     ConfigModule.forRoot({
       load: configs,
       isGlobal: true,
-      envFilePath: ['.env'],
-      ignoreEnvFile: process.env.APP_ENV === 'production',
+      envFilePath: process.env.APP_ENV === 'production' ? ['config/.env'] : ['.env'],
       expandVariables: true,
     }),
 
@@ -90,4 +89,4 @@ import { ClerkModule } from '@/clerk/clerk.module'
     AppService,
   ],
 })
-export class AppModule {}
+export class AppModule { }

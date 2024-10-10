@@ -97,7 +97,7 @@ CREATE TABLE "claimed_activity_order" (
 );
 
 -- CreateTable
-CREATE TABLE "user" (
+CREATE TABLE "admin_user" (
   "id" SERIAL NOT NULL,
   "email" VARCHAR(255) NOT NULL UNIQUE,
   "avatar" VARCHAR(255),
@@ -108,7 +108,7 @@ CREATE TABLE "user" (
   "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-  CONSTRAINT "user_pkey" PRIMARY KEY ("id")
+  CONSTRAINT "admin_user_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable

@@ -1,0 +1,30 @@
+services:
+  nextmoneyservice:
+    image: ghcr.io/virgoone/next-money-service:latest   # service的Docker镜像地址
+    deploy:
+      replicas: 1
+    ports:
+      - "3000:3000"
+    networks:
+      - money_network  # 定义网络，使得不同的服务可以相互通信
+    restart: always  # 如果服务失败，Docker会自动重启服务
+    environment:
+      - APP_ENV=${APP_ENV:-production}  # 设置环境变量
+    volumes:
+      - ./config/.env:/app/config/.env  # 将本地的 config/.env 文件挂载到容器的 /config/.env
+
+    labels:
+      - autoheal=true
+
+#  autoheal: #监控容器，如果容器不健康，自动重启
+#    image: willfarrell/autoheal
+#    container_name: autoheal
+#    restart: always
+#    environment:
+#      - AUTOHEAL_CONTAINER_LABEL=autoheal
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  money_network:  # 自定义网络的定义
+    driver: bridge  # 使用桥接驱动程序

@@ -89,14 +89,14 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GHCR_PAT }}
 
       - name: Build and push
         id: docker-build
         uses: docker/build-push-action@v3
         with:
           context: ./server
-          file: ./server/Dockerfile
+          file: ./server/docker/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -113,14 +113,3 @@ jobs:
             ${{ steps.meta.outputs.tags }}
             ```
             digest: `${{ steps.docker-build.outputs.digest }}`
-
-  trigger-workflow-build-cluster-image:
-    needs: [dockerize-server]
-    if: github.ref == format('refs/heads/{0}', 'main') && github.event_name != 'pull_request_target'
-    runs-on: ubuntu-latest
-    steps:
-      - name: trigger cluster image workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          event-type: docker_build_success
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "latest"}'
