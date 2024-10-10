@@ -46,7 +46,7 @@ jobs:
 
       - name: Deploy server
         working-directory: web
-        run: netlify deploy --dir=dist --prod
+        run: netlify deploy --dir=web/dist --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_CLI_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_CLI_SITE_ID }}
