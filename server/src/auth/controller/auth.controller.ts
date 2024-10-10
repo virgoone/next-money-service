@@ -30,6 +30,13 @@ export class AuthController {
     const { email, type } = dto
     const ip = GetClientIPFromRequest(req)
 
+    if (type !== VerifyCodeType.Signup) {
+      const user = await this.userService.findOneByEmail(email)
+      if (!user) {
+        return ResponseUtil.error('用户不存在')
+      }
+    }
+
     const err = await this.authService.sendCode(email, type, ip)
     if (err) {
       return ResponseUtil.error(err)
