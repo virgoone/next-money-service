@@ -56,13 +56,14 @@ export class AuthController {
     // check if user exists
     const user = await this.userService.findOneByEmail(email)
     if (!user) {
-      const { username, password } = dto
-      if (!username || !password) {
-        return ResponseUtil.error('username and password is required')
-      }
-      const newUser = await this.userService.signup({ name: username, password, email })
-      const data = this.authService.signin(newUser)
-      return ResponseUtil.ok(data)
+      return ResponseUtil.error('用户不存在')
+      // const { username, password } = dto
+      // if (!username || !password) {
+      //   return ResponseUtil.error('username and password is required')
+      // }
+      // const newUser = await this.userService.signup({ name: username, password, email })
+      // const data = this.authService.signin(newUser)
+      // return ResponseUtil.ok(data)
     }
     const userId = UserHashids.encode(user.id)
     const token = this.authService.signin(userId)
