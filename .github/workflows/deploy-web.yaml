@@ -1,0 +1,57 @@
+name: 发布 web
+on:
+  push:
+    branches: [main]
+    paths:
+      - "web/**"
+      - ".github/workflows/deploy-web.yml"
+      - "!**/*.md"
+      
+env:
+  TZ: Asia/Shanghai
+  APP_ENV: production
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 8.15.7
+      - name: Setup Node v${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install netlify
+        run: npm install -g netlify
+      - name: Install dependencies
+        working-directory: web
+        run: pnpm i --frozen-lockfile
+      - name: Build
+        working-directory: web
+        run: pnpm build --app-env=production
+      - name: Copy 404.html
+        working-directory: web
+        run: cp dist/index.html ./dist/404.html
+
+      - name: Deploy server
+        working-directory: web
+        run: netlify deploy --dir=dist --prod
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_CLI_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_CLI_SITE_ID }}
+
+      - name: Read package.json
+        id: info
+        uses: jaywcjlove/github-action-package@main
+      - run: echo "version - ${{ steps.info.outputs.version }}"
