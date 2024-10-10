@@ -94,7 +94,7 @@ export default function VoucherPage() {
       title: "支付金额",
       dataIndex: "amount",
       width: 150,
-      render: (amount) => formatPrice(amount),
+      render: (amount) => formatPrice(amount / 100),
     },
     {
       title: "购买渠道",
