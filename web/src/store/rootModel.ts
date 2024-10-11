@@ -89,6 +89,7 @@ function createRootStore(initialProps?: Partial<RootStoreProps>) {
             set((state) => {
               state.theme = defaultTheme as ThemeType
               state.token = localStorage.getItem('@@token')
+              state.isLogin = !!state.token
               updateTheme(state.theme)
             })
             const { info } = get()
