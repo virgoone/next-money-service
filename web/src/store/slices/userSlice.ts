@@ -144,6 +144,7 @@ const createUserModelSlice: StateCreator<
     set((state) => {
       state.token = null
       state.info = null
+      state.isLogin = false
       localStorage.removeItem('@@token')
     })
   },
