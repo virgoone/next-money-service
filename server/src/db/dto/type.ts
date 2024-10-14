@@ -60,3 +60,9 @@ export type FluxDto = Prisma.FluxDataGetPayload<any>;
 export type FluxSchema = Prisma.FluxDataCreateInput;
 
 export type FluxSelectDto = Omit<FluxDto, "id"> & { id: string };
+
+export type UserDto = Prisma.UserGetPayload<any>;
+
+export type UserSchema = Prisma.UserCreateInput;
+
+export type UserSelectDto = Omit<UserDto, "id"> & { id: string };

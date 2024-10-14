@@ -1,18 +1,7 @@
 import { IRequest, IResponse } from '@/utils/request'
-import { ApiResponseObject, ApiResponseString, ResponseUtil } from '@/utils/response'
+import { ApiResponseObject, ApiResponsePagination, ApiResponseString, ResponseUtil } from '@/utils/response'
+import { Controller, Param, Get, Put, Post, Delete, Logger, Query, Body, UseGuards, UseInterceptors, UploadedFile, Req, Res } from '@nestjs/common'
 
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Req,
-  Res,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import {
   ApiBearerAuth,
@@ -20,6 +9,7 @@ import {
   ApiConsumes,
   ApiOperation,
   ApiTags,
+  ApiQuery
 } from '@nestjs/swagger'
 import { omit } from 'lodash'
 import { UserOmitProps } from '@/app/constants/app.constant'
@@ -34,6 +24,10 @@ import { UserHashids } from '@/db/dto/user.dto'
 import { UserWithProfile, UserWithSts } from '@/auth/dto/user.get.dto'
 import { BucketService } from '@/bucket/services/bucket.service'
 import { ResetPasswordDto, BindPasswordDto } from '../dto/bind-password.dto'
+import { UserDto } from '../dto/get.dto'
+import { UserQuery } from '../interface/query.interface'
+import { CreateUserDto } from '../dto/create-user.dto'
+
 @ApiTags('User')
 @ApiBearerAuth('Authorization')
 @Controller('user')
@@ -43,6 +37,110 @@ export class UserController {
     private readonly authService: AuthService,
     private readonly bucketService: BucketService,
   ) { }
+
+
+  /**
+   * Get my billings
+   */
+  @ApiOperation({ summary: 'Get admin users' })
+  @ApiResponsePagination(UserDto)
+  @UseGuards(JwtAuthGuard)
+  @ApiQuery({
+    name: 'sort',
+    type: String,
+    description: 'sort',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'state',
+    type: String,
+    description: 'user state',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'startTime',
+    type: String,
+    description: 'pagination start time',
+    required: false,
+    example: '2021-01-01T00:00:00.000Z',
+  })
+  @ApiQuery({
+    name: 'endTime',
+    type: String,
+    description: 'pagination end time',
+    required: false,
+    example: '2022-01-01T00:00:00.000Z',
+  })
+  @ApiQuery({
+    name: 'page',
+    type: Number,
+    description: 'page number',
+    required: false,
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    description: 'page size',
+    required: false,
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'operator',
+    type: String,
+    description: 'operator',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'id',
+    type: String,
+    description: 'id',
+    required: false,
+  })
+  @Get()
+  async findAll(
+    @Query('id') id?: string,
+    @Query('sort') sort?: string,
+    @Query('state') state?: string,
+    @Query('startTime') startTime?: string,
+    @Query('endTime') endTime?: string,
+    @Query('page') page?: number,
+    @Query('pageSize') pageSize?: number,
+  ) {
+    const query: UserQuery = {
+      page: page || 1,
+      pageSize: pageSize || 10,
+    }
+
+    if (query.pageSize > 100) {
+      query.pageSize = 100
+    }
+
+    if (state) {
+      query.state = state
+    }
+
+    if (sort) {
+      query.sort = sort
+    }
+
+    if (id) {
+      const [numId] = UserHashids.decode(id)
+      query.id = Number(numId)
+    }
+
+    if (startTime) {
+      query.from = startTime
+    }
+
+    if (endTime) {
+      query.to = endTime
+    }
+
+    const data = await this.userService.findByPage(query)
+    return ResponseUtil.ok(data)
+  }
+
 
   /**
    * Update avatar of user
@@ -98,6 +196,19 @@ export class UserController {
     }
 
     res.redirect(`https://i.pravatar.cc/150?img=${uid}`)
+  }
+
+  @ApiOperation({ summary: 'Create admin user' })
+  @ApiResponseString()
+  @Post('create/user')
+  @UseGuards(JwtAuthGuard)
+  async createUser(@Body() dto: CreateUserDto) {
+    const _user = await this.userService.findOneByEmail(dto.email)
+    if (_user) {
+      return ResponseUtil.error('email has already been bound')
+    }
+    const userId = await this.userService.signup(dto)
+    return ResponseUtil.ok(userId)
   }
 
   /**

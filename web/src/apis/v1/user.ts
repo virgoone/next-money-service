@@ -10,6 +10,24 @@
 import request from '@/utils/ajax';
 
 /**
+* Get admin users
+*/
+export async function UserControllerFindAll(
+  params: Paths.UserControllerFindAll.BodyParameters,
+): Promise<{
+    error: string;
+    data: Paths.UserControllerFindAll.Responses
+}> {
+  // /v1/user
+  let _params: { [key: string]: any } = {
+    ...params,
+  };
+  return request.get(`/v1/user`,  {
+    params: _params
+  });
+}
+
+/**
 * Update avatar of user
 */
 export async function UserControllerUpdateAvatar(
@@ -42,6 +60,24 @@ export async function UserControllerGetAvatar(
   };
   return request.get(`/v1/user/avatar/${_params.uid}`,  {
     params: _params
+  });
+}
+
+/**
+* Create admin user
+*/
+export async function UserControllerCreateUser(
+  params: Definitions.CreateUserDto,
+): Promise<{
+    error: string;
+    data: Paths.UserControllerCreateUser.Responses
+}> {
+  // /v1/user/create/user
+  let _params: { [key: string]: any } = {
+    ...params,
+  };
+  return request.post(`/v1/user/create/user`,  {
+    ..._params
   });
 }
 

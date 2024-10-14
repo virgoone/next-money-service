@@ -158,6 +158,11 @@ export const routes: RouteConfig[] = [
     icon: <UserOutlined />,
     children: [
       {
+        name: 'menu.user.adminList',
+        key: 'user/admin-list',
+        componentPath: 'user/admin-list',
+      },
+      {
         name: 'menu.user.setting',
         key: 'user/setting',
         componentPath: 'user/setting',

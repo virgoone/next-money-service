@@ -11,6 +11,7 @@ import {
 import { HashUtil } from '@/utils/hash'
 import { UserState } from '@/auth/type'
 import { UserHashids } from '@/db/dto/user.dto'
+import { UserDto } from '@/db/dto/type'
 
 @Injectable()
 export class UserService {
@@ -29,6 +30,84 @@ export class UserService {
     return HashUtil.randomSalt(length)
   }
 
+  async findByPage(params: {
+    page: number
+    id?: number
+    pageSize: number
+    sort?: string
+    from?: string
+    state?: string
+    to?: string
+    operator?: 'or' | 'and'
+  }) {
+    const { id, state, page = 1, pageSize = 10, sort, from, to, operator = 'and' } = params
+    const offset = (page - 1) * pageSize;
+    const [column, order] = (sort?.split(".").filter(Boolean) ?? [
+      "createdAt",
+      "desc",
+    ]) as [keyof UserDto | undefined, "asc" | "desc" | undefined];
+
+    const whereConditions: Prisma.UserWhereInput = {};
+
+    if (id) {
+      whereConditions.id = {
+        in: [id]
+      }
+    }
+
+    if (from && to) {
+      whereConditions.createdAt = {
+        gte: new Date(from),
+        lte: new Date(to),
+      };
+    }
+
+    if (state) {
+      whereConditions.state = state
+    }
+
+    const where =
+      operator === "or"
+        ? {
+          OR: Object.entries(whereConditions).map(([key, value]) => ({
+            [key]: value,
+          })),
+        }
+        : whereConditions;
+
+    const [data, total] = await Promise.all([
+      this.db.user.findMany({
+        where,
+        take: pageSize,
+        skip: offset,
+        select: {
+          id: true,
+          email: true,
+          avatar: true,
+          name: true,
+          phone: true,
+          state: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: column ? { [column]: order ?? "desc" } : { id: "desc" },
+      }),
+      this.db.user.count({ where }),
+    ]);
+
+    const pageCount = Math.ceil(total / pageSize);
+
+    return {
+      list: data.map(({ id, ...rest }) => ({
+        ...rest,
+        id: UserHashids.encode(id), // Assuming you want to convert id to string
+      })),
+      pageCount,
+      page,
+      pageSize,
+      total,
+    };
+  }
 
   async signup(params: { name: string, password: string, email: string, phone?: string, emailVerified?: boolean }) {
     const { name, password, email, phone, emailVerified } = params

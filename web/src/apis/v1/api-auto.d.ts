@@ -14,6 +14,9 @@ inviteCode?: string; /* invite code */
      export type UserWithProfile = {
 id?: string; name?: string; email?: string; phone?: string; createdAt?: string; updatedAt?: string; avatar?: string; }
 
+     export type CreateUserDto = {
+name?: string; password?: string; email?: string; }
+
      export type BindEmailDto = {
 email?: string; code?: string; /* verify code */
 password?: string; /* password */
@@ -84,6 +87,14 @@ declare namespace Paths {
       export type Responses = any;
     }
 
+    namespace UserControllerFindAll {
+      export type QueryParameters = any;
+
+      export type BodyParameters = any;
+
+      export type Responses = any;
+    }
+
     namespace UserControllerUpdateAvatar {
       export type QueryParameters = any;
 
@@ -96,6 +107,14 @@ declare namespace Paths {
       export type QueryParameters = any;
 
       export type BodyParameters = any;
+
+      export type Responses = any;
+    }
+
+    namespace UserControllerCreateUser {
+      export type QueryParameters = any;
+
+      export type BodyParameters = Definitions.CreateUserDto;
 
       export type Responses = any;
     }
