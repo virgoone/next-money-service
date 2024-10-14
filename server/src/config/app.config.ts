@@ -9,6 +9,7 @@ export default registerAs(
     clientUrl: process.env.CLIENT_URL,
     name: process.env.APP_NAME || 'Server',
     env: process.env.APP_ENV,
+    proxy: process.env.PROXY === 'true' || false,
     isDev: process.env.APP_ENV === 'development',
     version,
 
